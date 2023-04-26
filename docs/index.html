@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.umd.js"
         integrity="sha512-vCUbejtS+HcWYtDHRF2T5B0BKwVG/CLeuew5uT2AiX4SJ2Wff52+kfgONvtdATqkqQMC9Ye5K+Td0OTaz+P7cw=="
@@ -40,9 +41,18 @@
         font-size: 18px;
 
     }
+
+    .scroll {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        left: 0;
+        margin: 0;
+    }
 </style>
 
 <body>
+    <hr class='scroll' , id="scroll">
     <div class="w3-container w3-center">
         <h2 class="w3-xxxlarge"><strong>A portrait of Shark incidents in Australia</strong></h2>
         <p class="w3-small">By me</p>
@@ -50,78 +60,87 @@
         <p class="w3-tiny">Published</p>
     </div>
 
-    <div class="w3-container w3-section">
+    <div class="w3-container w3-section w3-justify">
         <p>Australia is known for its beautiful beaches and vibrant beach culture,
             attracting millions of visitors every year. With more than 36,000 kilometers of
             coastline, it is no surprise that Australia is also home to a diverse range of
             marine life, including many species of sharks. As a result, shark encounters and
             attacks have become a topic of concern for beachgoers and researchers alike.</p>
+
+        <p>There have been <strong id="nIncidents">XX</strong> recorded incidents in Australia since <span
+                id="recordsSince"></span>.
+
+        <p>Let's dive into the numbers</p>
     </div>
 
-    <div class="w3-container w3-section">
+    <div id="graphic">
 
         <div class="w3-container w3-section">
-            <h3 class="w3-border-bottom w3-border-white"><strong>When ...</strong></h3>
-            <p>There have been <strong id="nIncidents">XX</strong> recorded incidents in Australia since <span
-                    id="recordsSince"></span>.
-                Incidents appear to be increasing, but this is heavily influenced by Australias population growth and
-                the
-                fact there are most people in the water.</p>
+
+            <div class=" w3-section">
+                <h3 class="w3-border-bottom w3-border-white"><strong>Years in review ...</strong></h3>
+                <p>Sharks have become hungrier over the past 100 years.</p>
+            </div>
+
+            <div class="w3-section viz-section">
+                <canvas id="incidentsByYear"></canvas>
+            </div>
+
         </div>
 
         <div class="w3-container w3-section">
-            <canvas id="incidentsByYear"></canvas>
+
+            <div class="w3-section">
+                <h3 class="w3-border-bottom w3-border-white"><strong>The culprits ...</strong></h3>
+                <p>White sharks prefer humans more than sharks.</p>
+            </div>
+
+            <div class="w3-section viz-section">
+                <canvas id="incidentsBySpecies"></canvas>
+            </div>
+
         </div>
 
-    </div>
+        <!--div class="w3-container w3-section">
 
-    <div class="w3-container w3-section">
+            <div class="w3-section">
+                <h3 class="w3-border-bottom w3-border-white"><strong>Where ...</strong></h3>
+                <p>Most incidents have occurred in the most populated states - NSW and QLD, however WA has a
+                    disproporinately greater
+                    number incidents given it's smaller population size.</p>
+            </div>
+
+            <div class="w3-section viz-section">
+                <canvas id="incidentsByState"></canvas>
+            </div>
+
+        </div-->
 
         <div class="w3-container w3-section">
-            <h3 class="w3-border-bottom w3-border-white"><strong>Culprits ...</strong></h3>
-            <p>The vast majority of these incidents (<span id="top5PctSpecies"></span> %) have been assocaited with just
-                5
-                shark species, but with <span id="nSpecies"></span>
-                different species suspected to be involved overall.</p>
+
+            <div class="w3-section">
+                <h3 class="w3-border-bottom w3-border-white"><strong>Splash and giggle ...</strong></h3>
+                <p>Clearly placing oneself in the water can entice a hungry shark.</p>
+            </div>
+
+            <div class="w3-section viz-section">
+                <canvas id="incidentsByActivity"></canvas>
+            </div>
+
         </div>
 
         <div class="w3-container w3-section">
-            <canvas id="incidentsBySpecies"></canvas>
+
+            <div class="w3-section">
+                <h3 class="w3-border-bottom w3-border-white"><strong>Working hours ...</strong></h3>
+                <p>Sharks have comfortable beds and they prefer to sleep during the night.</p>
+            </div>
+
+            <div class="w3-section viz-section">
+                <canvas id="incidentsByTime"></canvas>
+            </div>
+
         </div>
-
-    </div>
-
-    <div class="w3-container w3-section">
-        <h2>TO BE CONTINUED</h2>
-    </div>
-
-
-
-    <div class="w3-container w3-section">
-        <h3 class="w3-border-bottom w3-border-white"><strong>Where ...</strong></h3>
-        <p>Most incidents have occurred in states with the highest population, however WA has a disproporinately greater
-            number</p>
-    </div>
-
-    <div class="w3-container w3-section">
-        <canvas id="incidentsByState"></canvas>
-    </div>
-
-    <div class="w3-container w3-section">
-        <p>Activities associated with being in the water, such as swimming or (surf) boarding, pose the greatest risk of
-            an encounter</p>
-    </div>
-
-    <div class="w3-container w3-section">
-        <canvas id="incidentsByActivity"></canvas>
-    </div>
-
-    <div class="w3-container w3-section">
-        <p>A comment on time</p>
-    </div>
-
-    <div class="w3-container w3-section">
-        <canvas id="incidentsByTime"></canvas>
     </div>
 
     <script>
@@ -158,13 +177,13 @@
                                     }
                                 ]
                             },
-                            options: vertOptions
+                            options: vertOptions('Number of incidents')
                         }
                     )
 
                 // Incidents by species                
-                document.querySelector('#top5PctSpecies').innerText = data.incidentsBySpecies.top5PctSpecies
-                document.querySelector('#nSpecies').innerText = data.incidentsBySpecies.nSpecies
+                //document.querySelector('#top5PctSpecies').innerText = data.incidentsBySpecies.top5PctSpecies
+                //document.querySelector('#nSpecies').innerText = data.incidentsBySpecies.nSpecies
 
                 let incidentsBySpecies =
                     new Chart(
@@ -180,8 +199,63 @@
                                     }
                                 ]
                             },
-                            options: horizOptions
+                            options: horizOptions('Number of incidents')
                         }
+                    )
+
+                let incidentsByState =
+                    new Chart(
+                        document.getElementById('incidentsByState'),
+                        {
+                            type: 'bar',
+                            data: {
+                                labels: data.incidentsByState.State,
+                                datasets: [
+                                    {
+                                        data: data.incidentsByState.n,
+                                        backgroundColor: 'rgba(255,255,255,0.80)'
+                                    }
+                                ]
+                            },
+                            options: vertOptions('Number of incidents')
+                        }
+                    )
+
+                let incidentsByActivity =
+                    new Chart(
+                        document.getElementById('incidentsByActivity'),
+                        {
+                            type: 'bar',
+                            data: {
+                                labels: data.incidentsByActivity['Victim.activity'],
+                                datasets: [
+                                    {
+                                        data: data.incidentsByActivity.n,
+                                        backgroundColor: 'rgba(255,255,255,0.80)'
+                                    }
+                                ]
+                            },
+                            options: horizOptions('Number of incidents')
+                        }
+                    )
+
+                let incidentsByTime =
+                    new Chart(
+                        document.getElementById('incidentsByTime'),
+                        {
+                            type: 'bar',
+                            data: {
+                                labels: data.incidentsByTime['Time.of.incident'],
+                                datasets: [
+                                    {
+                                        data: data.incidentsByTime.n,
+                                        backgroundColor: 'rgba(255,255,255,0.80)'
+                                    }
+                                ],
+                            },
+                            options: vertOptions('Number of incidents')
+                        }
+
                     )
 
             });
@@ -192,97 +266,55 @@
         Chart.defaults.color = 'white';
         Chart.defaults.plugins.legend.display = false
 
-        const data = [
-            { year: 2010, count: 10 },
-            { year: 2011, count: 20 },
-            { year: 2012, count: 15 },
-            { year: 2013, count: 25 },
-            { year: 2014, count: 22 },
-            { year: 2015, count: 30 },
-            { year: 2016, count: 28 },
-        ];
+        function vertOptions(title) {
 
-        let vertOptions = {
-            scales: {
-                x: {
-                    grid: {
-                        display: false
-                    }
-                },
-                y: {
-                    border: {
-                        display: false
+            return {
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: title
+                        },
+                        border: {
+                            display: false
+                        }
                     }
                 }
             }
         }
 
-        let horizOptions = {
-            indexAxis: 'y',
-            scales: {
-                y: {
-                    grid: {
-                        display: false
-                    }
-                },
-                x: {
-                    border: {
-                        display: false
+        function horizOptions(title) {
+            return {
+                indexAxis: 'y',
+                scales: {
+                    y: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: title
+                        },
+                        border: {
+                            display: false
+                        }
                     }
                 }
             }
         }
 
-        new Chart(
-            document.getElementById('incidentsByState'),
-            {
-                type: 'bar',
-                data: {
-                    labels: data.map(row => row.year),
-                    datasets: [
-                        {
-                            data: data.map(row => row.count),
-                            backgroundColor: 'rgba(255,255,255,0.80)'
-                        }
-                    ]
-                },
-                options: vertOptions
-            }
-        )
 
-        new Chart(
-            document.getElementById('incidentsByActivity'),
-            {
-                type: 'bar',
-                data: {
-                    labels: data.map(row => row.year),
-                    datasets: [
-                        {
-                            data: data.map(row => row.count),
-                            backgroundColor: 'rgba(255,255,255,0.80)'
-                        }
-                    ]
-                },
-                options: horizOptions
-            }
-        )
 
-        new Chart(
-            document.getElementById('incidentsByTime'),
-            {
-                type: 'line',
-                data: {
-                    labels: data.map(row => row.year),
-                    datasets: [
-                        {
-                            data: data.map(row => row.count),
-                            backgroundColor: 'rgba(255,255,255,0.80)'
-                        }
-                    ],
-                    options: vertOptions
-                }
-            }
-        )
+
+
+
     </script>
 
 

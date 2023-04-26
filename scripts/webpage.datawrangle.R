@@ -10,6 +10,7 @@ shark_out <- list()
 
 shark_out$n_incidents <- nrow(shark)
 
+# By year
 shark_out$incidentsByYear <-
   shark |>
   dplyr::count(Incident.year) |>
@@ -18,12 +19,7 @@ shark_out$incidentsByYear <-
     fill = list(n = 0)
   )
 
-
-# The vast majority of these incidents (X %) have been assocaited with just 5
-# shark species
-
 # Shark species
-
 incidentsBySpecies <-
   shark |>
   dplyr::count(Shark.common.name) |>
@@ -54,20 +50,63 @@ shark_out$incidentsBySpecies$data <-
       )
   )
 
-shark_out |>
-  jsonlite::toJSON(dataframe = 'columns', auto_unbox = TRUE) |>
-  writeLines('australian-shark-incidents/assets/data.json')
 
 # Location
-shark |>
+shark_out$incidentsByState <-
+  shark |>
   dplyr::count(State)|>
-  dplyr::arrange(dplyr::desc(n))
+  dplyr::arrange(dplyr::desc(n)) |>
+  dplyr::mutate(pct = n / sum(n) * 100) 
+
 
 # Activity
-shark |>
+incidentsByActivity <-
+  shark |>
   dplyr::count(Victim.activity) |>
-  dplyr::arrange(dplyr::desc(n))
+  dplyr::arrange(dplyr::desc(n)) |>
+  dplyr::mutate(pct = n / sum(n) * 100) 
+
+
+shark_out$incidentsByActivity <-
+  incidentsByActivity |>
+  dplyr::top_n(5) |>
+  # combine others
+  dplyr::bind_rows(
+    incidentsByActivity |>
+      dplyr::slice(-c(1:5)) |> 
+      dplyr::mutate(Victim.activity = 'Other') |>
+      dplyr::group_by(Victim.activity) |>
+      dplyr::summarise(
+        dplyr::across(.cols = dplyr::everything(),
+                      .fns = sum), 
+        .groups = 'drop')
+  )
 
 # Time of day
-shark |>
-  dplyr::count(Time.of.incident)
+shark_out$incidentsByTime <-
+  shark |>
+  dplyr::mutate(Time.of.incident = ifelse(nchar(Time.of.incident) == 3, paste0(0, Time.of.incident), Time.of.incident),
+                Time.of.incident = as.POSIXct(Time.of.incident, format = '%H%M'),
+                #Time.of.incident = lubridate::floor_date(Time.of.incident, unit = 'hours'),
+                Time.of.incident = lubridate::floor_date(Time.of.incident, unit = lubridate::minutes(30))
+                ) |>
+  dplyr::count(Time.of.incident) |>
+  dplyr::filter(!is.na(Time.of.incident)) |>
+  tidyr::complete(Time.of.incident = seq.POSIXt(from = min(lubridate::floor_date(Time.of.incident, 'day')), 
+                                                to = min(lubridate::ceiling_date(Time.of.incident, 'day')),
+                                                by = 60 * 30),
+                  fill = list(n = 0)) |>
+  dplyr::mutate(Time.of.incident = format(Time.of.incident, '%H%M')) |>
+  dplyr::slice(-dplyr::n())
+
+shark_out |>
+  jsonlite::toJSON(dataframe = 'columns', auto_unbox = TRUE) |>
+  writeLines('docs/assets/data.json')
+
+
+
+
+
+
+
+
