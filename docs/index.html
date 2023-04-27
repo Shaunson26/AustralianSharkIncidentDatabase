@@ -5,58 +5,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.umd.js"
-        integrity="sha512-vCUbejtS+HcWYtDHRF2T5B0BKwVG/CLeuew5uT2AiX4SJ2Wff52+kfgONvtdATqkqQMC9Ye5K+Td0OTaz+P7cw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
-    <title>Sharks</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="assets/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.umd.js"
+        integrity="sha512-vCUbejtS+HcWYtDHRF2T5B0BKwVG/CLeuew5uT2AiX4SJ2Wff52+kfgONvtdATqkqQMC9Ye5K+Td0OTaz+P7cw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="assets/data.js"></script>
+    <script src="assets/page-fns.js"></script>
 
+
+    <title>Sharkies</title>
 </head>
 
-<style>
-    :root {
-        --darkBlue: #064273;
-        --white: #ffffff;
-    }
-
-    body,
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        font-family: 'Roboto Slab', serif;
-    }
-
-    body {
-        max-width: 700px;
-        margin: auto;
-        background-color: var(--darkBlue);
-        color: white;
-        font-size: 18px;
-
-    }
-
-    .scroll {
-        position: absolute;
-        top: 0;
-        width: 100%;
-        left: 0;
-        margin: 0;
-    }
-
-    .viz-section {
-        min-height: 200px;
-    }
-</style>
-
 <body>
-    <hr class='scroll' , id="scroll">
+
     <div class="w3-container w3-center">
         <h2 class="w3-xxxlarge"><strong>A portrait of Shark incidents in Australia</strong></h2>
         <p class="w3-small">By me</p>
@@ -71,260 +36,77 @@
             marine life, including many species of sharks. As a result, shark encounters and
             attacks have become a topic of concern for beachgoers and researchers alike.</p>
 
-            <p>
+        <p>
             The <a href="https://www.nature.com/articles/s41597-022-01453-9" , target="_blank"> Australian
                 Shark-Incident
-                Database</a> captures Australian Shark-Incident information, and here we have a look at some of the numbers in there.</p>
+                Database</a> captures Australian Shark-Incident information, and here we have a look at some of the
+            numbers in there.</p>
 
-        <p>There have been <strong id="nIncidents" class="w3-xlarge">XX</strong> recorded incidents in Australia since <span
-                id="recordsSince"></span>. 
+        <p>There have been <strong id="nIncidents" class="w3-xlarge">XX</strong> recorded incidents in Australia since
+            <span id="recordsSince"></span>.
     </div>
 
     <div id="graphic">
 
-        <div class="w3-container w3-section">
-
-            <div class=" w3-section">
-                <h3 class="w3-border-bottom w3-border-white"><strong>Years in review ...</strong></h3>
-                <p>Sharks have become hungrier over the past 100 years.</p>
+        <div id="vis">
+            <div class="w3-container" style="width:100%;height:50%;">
+                <canvas id='visplot' style="max-width:100%"></canvas>
             </div>
-
-            <div class="w3-section viz-section">
-                <canvas id="incidentsByYear"></canvas>
-            </div>
-
         </div>
 
-        <div class="w3-container w3-section">
-
-            <div class="w3-section">
-                <h3 class="w3-border-bottom w3-border-white"><strong>The culprits ...</strong></h3>
-                <p>White sharks prefer humans more than sharks.</p>
-            </div>
-
-            <div class="w3-section viz-section">
-                <canvas id="incidentsBySpecies"></canvas>
-            </div>
-
+        <div class="step w3-container" id="step0">
+            <h3 class="w3-border-bottom w3-border-white"><strong>Years in review ...</strong></h3>
+            <p>Sharks have become hungrier over the past 100 years.</p>
         </div>
 
-        <!--div class="w3-container w3-section">
-
-            <div class="w3-section">
-                <h3 class="w3-border-bottom w3-border-white"><strong>Where ...</strong></h3>
-                <p>Most incidents have occurred in the most populated states - NSW and QLD, however WA has a
-                    disproporinately greater
-                    number incidents given it's smaller population size.</p>
-            </div>
-
-            <div class="w3-section viz-section">
-                <canvas id="incidentsByState"></canvas>
-            </div>
-
-        </div-->
-
-        <div class="w3-container w3-section">
-
-            <div class="w3-section">
-                <h3 class="w3-border-bottom w3-border-white"><strong>Splash and giggle ...</strong></h3>
-                <p>Clearly placing oneself in the water can entice a hungry shark.</p>
-            </div>
-
-            <div class="w3-section viz-section">
-                <canvas id="incidentsByActivity"></canvas>
-            </div>
-
+        <div class="step w3-container" id="step1">
+            <h3 class="w3-border-bottom w3-border-white"><strong>The culprits ...</strong></h3>
+            <p>White sharks prefer humans more than sharks.</p>
         </div>
 
-        <div class="w3-container w3-section">
-
-            <div class="w3-section">
-                <h3 class="w3-border-bottom w3-border-white"><strong>Working hours ...</strong></h3>
-                <p>Sharks have comfortable beds and they prefer to sleep during the night.</p>
-            </div>
-
-            <div class="w3-section viz-section">
-                <canvas id="incidentsByTime"></canvas>
-            </div>
-
+        <div class="step w3-section" id="step2">
+            <h3 class="w3-border-bottom w3-border-white"><strong>Splash and giggle ...</strong></h3>
+            <p>Clearly placing oneself in the water can entice a hungry shark.</p>
         </div>
+
+
+        <div class="step w3-section" id="step3">
+            <h3 class="w3-border-bottom w3-border-white"><strong>Working hours ...</strong></h3>
+            <p>Sharks have comfortable beds and they prefer to sleep during the night.</p>
+        </div>
+
+    </div>
+
+
+    <div id='end' class="w3-container">
+        <h2>End</h2>
     </div>
 
     <script>
-
-        const fetchPromise = fetch(
-            "assets/data.json"
-        );
-
-        fetchPromise
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-
-                // Totals
-                document.querySelector('#nIncidents').innerText = data.n_incidents
-                document.querySelector('#recordsSince').innerText = data.incidentsByYear['Incident.year'][0]
-
-                // Incident by year
-                let incidentsByYear =
-                    new Chart(
-                        document.getElementById('incidentsByYear'),
-                        {
-                            type: 'bar',
-                            data: {
-                                labels: data.incidentsByYear['Incident.year'],
-                                datasets: [
-                                    {
-                                        data: data.incidentsByYear.n,
-                                        backgroundColor: 'rgba(255,255,255,0.80)',
-                                    }
-                                ]
-                            },
-                            options: vertOptions('Number of incidents')
-                        }
-                    )
-
-                // Incidents by species                
-                //document.querySelector('#top5PctSpecies').innerText = data.incidentsBySpecies.top5PctSpecies
-                //document.querySelector('#nSpecies').innerText = data.incidentsBySpecies.nSpecies
-
-                let incidentsBySpecies =
-                    new Chart(
-                        document.getElementById('incidentsBySpecies'),
-                        {
-                            type: 'bar',
-                            data: {
-                                labels: data.incidentsBySpecies.data['Shark.common.name'],
-                                datasets: [
-                                    {
-                                        data: data.incidentsBySpecies.data.n,
-                                        backgroundColor: 'rgba(255,255,255,0.80)'
-                                    }
-                                ]
-                            },
-                            options: horizOptions('Number of incidents')
-                        }
-                    )
-
-                let incidentsByState =
-                    new Chart(
-                        document.getElementById('incidentsByState'),
-                        {
-                            type: 'bar',
-                            data: {
-                                labels: data.incidentsByState.State,
-                                datasets: [
-                                    {
-                                        data: data.incidentsByState.n,
-                                        backgroundColor: 'rgba(255,255,255,0.80)'
-                                    }
-                                ]
-                            },
-                            options: vertOptions('Number of incidents')
-                        }
-                    )
-
-                let incidentsByActivity =
-                    new Chart(
-                        document.getElementById('incidentsByActivity'),
-                        {
-                            type: 'bar',
-                            data: {
-                                labels: data.incidentsByActivity['Victim.activity'],
-                                datasets: [
-                                    {
-                                        data: data.incidentsByActivity.n,
-                                        backgroundColor: 'rgba(255,255,255,0.80)'
-                                    }
-                                ]
-                            },
-                            options: horizOptions('Number of incidents')
-                        }
-                    )
-
-                let incidentsByTime =
-                    new Chart(
-                        document.getElementById('incidentsByTime'),
-                        {
-                            type: 'bar',
-                            data: {
-                                labels: data.incidentsByTime['Time.of.incident'],
-                                datasets: [
-                                    {
-                                        data: data.incidentsByTime.n,
-                                        backgroundColor: 'rgba(255,255,255,0.80)'
-                                    }
-                                ],
-                            },
-                            options: vertOptions('Number of incidents')
-                        }
-
-                    )
-
-            });
-
-
-        Chart.defaults.backgroundColor = 'white';
-        Chart.defaults.borderColor = 'rgba(255,255,255,0.25)';
-        Chart.defaults.color = 'white';
-        Chart.defaults.plugins.legend.display = false
-        Chart.defaults.maintainAspectRatio = false
-
-        function vertOptions(title) {
-
-            return {
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: title
-                        },
-                        border: {
-                            display: false
-                        }
-                    }
-                }
+        document.onreadystatechange = function (e) {
+            if (document.readyState === 'complete') {
+                //visSizer();
             }
+        };
+
+        window.onload = function () {
+            scroller()
+            visSizer()
+            // Totals
+            document.querySelector('#nIncidents').innerText = data.n_incidents
+            document.querySelector('#recordsSince').innerText = data.incidentsByYear['Incident.year'][0]
         }
 
-        function horizOptions(title) {
-            return {
-                indexAxis: 'y',
-                scales: {
-                    y: {
-                        grid: {
-                            display: false
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: title
-                        },
-                        border: {
-                            display: false
-                        }
-                    }
-                }
-            }
+        let vizPos = visPosition();
+
+        window.onscroll = function () {
+            vizPositioner(vizPos)
         }
 
-
-
-
-
-
+        window.onbeforeunload = function () {
+            window.scrollTo(0, 0);
+        }
     </script>
-
 
 </body>
 
