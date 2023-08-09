@@ -3,111 +3,365 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="assets/styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.umd.js"
         integrity="sha512-vCUbejtS+HcWYtDHRF2T5B0BKwVG/CLeuew5uT2AiX4SJ2Wff52+kfgONvtdATqkqQMC9Ye5K+Td0OTaz+P7cw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="assets/data.js"></script>
-    <script src="assets/page-fns.js"></script>
-
-
+    <script src="./assets/data.js"></script>
     <title>Sharkies</title>
 </head>
 
 <body>
+    <style>
+        :root {
+            --max-width: 800px;
+            --darkBlue: #064273;
+            --white: #ffffff;
+        }
 
-    <div class="w3-container w3-center">
-        <h2 class="w3-xxxlarge"><strong>A portrait of Shark incidents in Australia</strong></h2>
-        <p class="w3-small">By me</p>
-        <p class="w3-tiny">Updated</p>
-        <p class="w3-tiny">Published</p>
-    </div>
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Roboto Slab', serif;
+        }
 
-    <div class="w3-container w3-section w3-justify">
-        <p>Australia is known for its beautiful beaches and vibrant beach culture,
-            attracting millions of visitors every year. With more than 36,000 kilometers of
-            coastline, it is no surprise that Australia is also home to a diverse range of
-            marine life, including many species of sharks. As a result, shark encounters and
-            attacks have become a topic of concern for beachgoers and researchers alike.</p>
+        body {
+            background-color: var(--darkBlue);
+            color: white;
+            font-size: 18px;
+        }
 
-        <p>
-            The <a href="https://www.nature.com/articles/s41597-022-01453-9" , target="_blank"> Australian
-                Shark-Incident
-                Database</a> captures Australian Shark-Incident information, and here we have a look at some of the
-            numbers in there.</p>
+        #graphic-and-text-container {
+            width: 100vw;
+            max-width: var(--max-width);
+            margin: auto;
+        }
 
-        <p>There have been <strong id="nIncidents" class="w3-xlarge">XX</strong> recorded incidents in Australia since
-            <span id="recordsSince"></span>.
-    </div>
+        #graphic-container-track {
+            position: relative;
+        }
 
-    <div id="graphic">
+        #graphic-container {
+            /* border: 5px solid pink; */
+            height: 100vh;
+            width: 100%;
+            max-width: var(--max-width);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-        <div id="vis">
-            <div class="w3-container" style="width:100%;height:50%;">
-                <canvas id='visplot' style="max-width:100%"></canvas>
+        .graphic-container-absolute {
+            position: absolute;
+            top: unset;
+        }
+
+        .graphic-container-fixed-top {
+            position: fixed;
+            top: 0;
+            bottom: unset;
+     
+        }
+
+        .graphic-container-fixed-bottom {
+            position: absolute;
+            top: unset;
+            bottom: 0;
+        }
+
+        #graphic-canvas-container {
+            height: 50vh;
+            width: 95%;
+        }
+
+        .stacked-div {
+            height: 100vh;
+            width: 100%;
+        }
+    </style>
+    <div id="graphic-and-text-container">
+
+        <div class="w3-container w3-center">
+            <h2 class="w3-xxxlarge"><strong>A portrait of Shark incidents in Australia</strong></h2>
+            <p class="w3-small">By me</p>
+            <p class="w3-tiny">Updated</p>
+            <p class="w3-tiny">Published</p>
+        </div>
+
+        <div class="w3-container w3-section w3-justify">
+            <p>Australia is known for its beautiful beaches and vibrant beach culture,
+                attracting millions of visitors every year. With more than 36,000 kilometers of
+                coastline, it is no surprise that Australia is also home to a diverse range of
+                marine life, including many species of sharks. As a result, shark encounters and
+                attacks have become a topic of concern for beachgoers and researchers alike.</p>
+
+            <p>
+                The <a href="https://www.nature.com/articles/s41597-022-01453-9" , target="_blank"> Australian
+                    Shark-Incident
+                    Database</a> captures Australian Shark-Incident information, and here we have a look at some of the
+                numbers in there.</p>
+
+            <p>There have been <strong id="nIncidents" class="w3-xlarge">XX</strong> recorded incidents in Australia
+                since
+                <span id="recordsSince"></span>.
+        </div>
+
+
+        <div id='graphic-container-track' class="w3-container">
+            <div id="graphic-container" class="w3-container graphic-container-absolute">
+                <div id="graphic-canvas-container" class="w3-container">
+                    <canvas id='vis-plot'></canvas>
+                </div>
+            </div>
+            <div class="stacked-div" id="step-0">
+                <h3 class="w3-border-bottom w3-border-white"><strong>Years in review ...</strong></h3>
+                <p>Sharks have become hungrier over the past 100 years.</p>
+
+            </div>
+            <div class="stacked-div" id="step-1">
+                <h3 class="w3-border-bottom w3-border-white"><strong>The culprits ...</strong></h3>
+                <p>White sharks prefer humans more than sharks.</p>
+
+            </div>
+            <div class="stacked-div" id="step-2">
+                <h3 class="w3-border-bottom w3-border-white"><strong>Splash and giggle ...</strong></h3>
+                <p>Clearly placing oneself in the water can entice a hungry shark.</p>
+
+            </div>
+            <div class="stacked-div" id="step-3">
+                <h3 class="w3-border-bottom w3-border-white"><strong>Working hours ...</strong></h3>
+                <p>Sharks have comfortable beds and they prefer to sleep during the night.</p>
             </div>
         </div>
 
-        <div class="step w3-container" id="step0">
-            <h3 class="w3-border-bottom w3-border-white"><strong>Years in review ...</strong></h3>
-            <p>Sharks have become hungrier over the past 100 years.</p>
+        <div id='end' class="w3-container">
+            <h3 class="w3-border-bottom w3-border-white"><strong>Conclusion</strong></h3>
+            <p class="w3-justify">Over the past century, it's like sharks have been attending a crash course in gourmet dining due to a
+                seafood shortage! With ocean stock depletion cramping their culinary style, these underwater foodies
+                have had to expand their menu options. Suddenly, the thought of a human-sized snack doesn't seem so
+                unappetizing to them, especially during their "day shifts" when they're on the prowl for something
+                substantial. It's like they've set up a seafood truck, but instead of parking it on a street corner,
+                they're patrolling the open waters. And just like any hardworking chef, sharks prefer to take a break at
+                night, catching some z's after a long day of hunting – because even predators need their beauty sleep,
+                right? So, if you're planning a dip in the ocean during daylight hours, just remember: you might be
+                unwittingly auditioning for a role in the Shark's Menu Special!</p>
+            <p>
         </div>
 
-        <div class="step w3-container" id="step1">
-            <h3 class="w3-border-bottom w3-border-white"><strong>The culprits ...</strong></h3>
-            <p>White sharks prefer humans more than sharks.</p>
-        </div>
-
-        <div class="step w3-section" id="step2">
-            <h3 class="w3-border-bottom w3-border-white"><strong>Splash and giggle ...</strong></h3>
-            <p>Clearly placing oneself in the water can entice a hungry shark.</p>
-        </div>
-
-
-        <div class="step w3-section" id="step3">
-            <h3 class="w3-border-bottom w3-border-white"><strong>Working hours ...</strong></h3>
-            <p>Sharks have comfortable beds and they prefer to sleep during the night.</p>
-        </div>
-
-    </div>
-
-
-    <div id='end' class="w3-container">
-        <h2>End</h2>
     </div>
 
     <script>
-        document.onreadystatechange = function (e) {
-            if (document.readyState === 'complete') {
-                //visSizer();
-            }
-        };
+
+        let topAndBottomLimits = topAndBottomRectValues('#graphic-container', '#end');
+        Chart.defaults.backgroundColor = 'white';
+        Chart.defaults.borderColor = 'rgba(255,255,255,0.25)';
+        Chart.defaults.color = 'white';
+        Chart.defaults.plugins.legend.display = false
+        Chart.defaults.maintainAspectRatio = false;
+
+        window.onscroll = function () {
+            vizPositioner(topAndBottomLimits, '#graphic-container')
+        }
 
         window.onload = function () {
-            scroller()
-            visSizer()
+            //scroller()
+            //visSizer()
             // Totals
             document.querySelector('#nIncidents').innerText = data.n_incidents
             document.querySelector('#recordsSince').innerText = data.incidentsByYear['Incident.year'][0]
         }
 
-        let vizPos = visPosition();
+        observeDivs();
+        initialiseVisualisation()
 
-        window.onscroll = function () {
-            vizPositioner(vizPos)
+        // Functions
+        function vertOptions(title) {
+
+            return {
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: title
+                        },
+                        border: {
+                            display: false
+                        }
+                    }
+                }
+            }
         }
 
-        window.onbeforeunload = function () {
-            window.scrollTo(0, 0);
+
+
+        function initialiseVisualisation() {
+
+            new Chart('vis-plot',
+                {
+                    type: 'bar',
+                    data: {
+                        labels: data.incidentsByYear['Incident.year'],
+                        datasets: [
+                            {
+                                data: data.incidentsByYear.n,
+                                backgroundColor: 'rgba(255,255,255,0.80)',
+                            }
+                        ]
+                    },
+                    options: vertOptions('Number of incidents')
+                }
+            )
+
+
         }
+
+        function updateVisualisation(index) {
+
+            let vis = Chart.getChart('vis-plot')
+
+            if (index == 0) {
+
+                if (vis == null) {
+                    initialiseVisualisation()
+                } else {
+                    vis.data.labels = data.incidentsByYear['Incident.year']
+                    vis.data.datasets[0].data = data.incidentsByYear.n
+                    vis.update()
+                }
+            }
+
+            if (index == 1) {
+
+                vis.data.labels = data.incidentsBySpecies.data['Shark.common.name']
+                vis.data.datasets[0].data = data.incidentsBySpecies.data.n
+                vis.update()
+
+            }
+
+            if (index == 2) {
+
+                vis.data.labels = data.incidentsByActivity['Victim.activity']
+                vis.data.datasets[0].data = data.incidentsByActivity.n
+                vis.update()
+
+            }
+
+            if (index == 3) {
+
+                vis.data.labels = data.incidentsByTime['Time.of.incident']
+                vis.data.datasets[0].data = data.incidentsByTime.n,
+                    vis.update()
+
+            }
+        }
+
+        /**
+         * Get the top and bottom page coordinates given the current view
+         * Used to determine if the viz div should have position 
+         * 'absolute' vs 'fixed'
+         */
+
+        function topAndBottomRectValues(topId, bottomId) {
+            let visDiv = document.querySelector(topId)
+            let visDivInitialTop = visDiv.getBoundingClientRect().top
+            let endDiv = document.querySelector(bottomId)
+            let endDivInitialTop = endDiv.getBoundingClientRect().top
+            return {
+                top: visDivInitialTop,
+                bottom: endDivInitialTop
+            }
+        }
+
+        /**
+         * Change the CSS position between 'absolute' vs 'fixed' given
+         * page view.
+         */
+
+        function vizPositioner(visPosition, vizId) {
+
+            let visDiv = document.querySelector(vizId)
+            let visDivPosition = getComputedStyle(visDiv).position
+            let scrollTopLocation = document.documentElement.scrollTop
+            let scrollBottomLocation = document.documentElement.scrollTop + visDiv.getBoundingClientRect().height
+
+            if (scrollTopLocation < visPosition.top) {
+                if (visDivPosition == 'fixed') {
+                    //console.log('visDiv absolute top')                 
+                    visDiv.classList.remove("graphic-container-fixed-top");
+                    visDiv.classList.add("graphic-container-absolute");
+                }
+            }
+
+            if (scrollTopLocation > visPosition.top & scrollBottomLocation < visPosition.bottom) {
+                if (visDivPosition == 'absolute') {
+                    //console.log('visDiv fixed')
+                    visDiv.classList.remove("graphic-container-absolute", "graphic-container-fixed-bottom");
+                    visDiv.classList.add("graphic-container-fixed-top");
+                }
+            }
+
+            if (scrollTopLocation > visPosition.top & scrollBottomLocation > visPosition.bottom) {
+                if (visDivPosition == 'fixed') {
+                    //console.log('hit bottom')
+                    visDiv.classList.remove("graphic-container-fixed-top");
+                    visDiv.classList.add("graphic-container-fixed-bottom");
+                }
+            }
+
+        }
+
+        /**
+         * Observers
+         */
+
+        function observeDivs() {
+
+            const divs = document.querySelectorAll('.stacked-div');
+            let currentVis = 'step-1';
+
+            const options = {
+                threshold: [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1], // You can adjust the thresholds as needed
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    let divId = entry.target.id
+                    let percentage = Math.floor(entry.intersectionRatio * 100)
+
+                    // if (percentage > 50 & divId !== currentVis) {
+                    //     document.querySelector('#graphic-container').style.opacity = 0;
+                    // }
+
+                    if (percentage > 75 & divId !== currentVis) {
+                        console.log('Switch to viz:', divId)
+                        currentVis = divId
+                        updateVisualisation(divId.replace('step-', ''))
+                        //document.querySelector('#graphic-container').style.opacity = 1;
+                    }
+                });
+            }, options);
+
+            divs.forEach((div) => {
+                observer.observe(div);
+            });
+        }
+
+
+
     </script>
-
 </body>
 
 </html>
